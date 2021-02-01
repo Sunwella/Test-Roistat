@@ -14,12 +14,12 @@
 						<div class="inline">
 							<h4 class="mr-10">Имя</h4>
 							<input
-								v-model="firstName">
+								v-model="internalDataObj.firstName">
 						</div>
 						<div class="inline">
 							<h4 class="mr-10">Телефон</h4>
 							<input
-								v-model="phone">
+								v-model="internalDataObj.phone">
 						</div>
 						<div v-if="bosses != null">
 							<div class="inline">
@@ -46,14 +46,19 @@
 <script>
 
 	export default {
-		props:["bosses"],
+		props:["bosses", "dataObj"],
 		data() {
 			return {
-				id: '',
-				firstName: '',
-				phone: '',
+				internalDataObj: null,
 				bossName: '',
-				bossId: ''
+			}
+		},
+		watch: {
+			dataObj: {
+				immediate: true,
+				handler(val) {
+					this.internalDataObj = JSON.parse(JSON.stringify(val));
+				}
 			}
 		},
 		methods: {
@@ -62,36 +67,24 @@
 			},
 			addWorker() {
 				if(this.bosses != null) {
-					for (let i = 0; i < this.bosses.length; i++) {
-						if (this.bosses[i].firstName == this.bossName) {
-							this.bossId = this.bosses[i].id;
-						}
+					let result = this.bosses.find(item => item.firstName == this.bossName);
+					if (result) {
+						this.internalDataObj.bossId = result.id;
 					}
-					this.id = this.bosses.length + 1;
+					this.internalDataObj.id = this.bosses.length + 1;
 				} else {
-					this.bossId = 1;
+					this.internalDataObj.bossId = 1;
 				}
 
-				let newWorker = {
-					id: this.id,
-					firstName: this.firstName,
-					phone: this.phone,
-					bossId: this.bossId
-				}
 				if (this.bossName == '') {
-					newWorker = {
-						id: this.id,
-						firstName: this.firstName,
-						phone: this.phone,
-						bossId: null
-					}
+					this.internalDataObj.bossId = null;
 				}
-				this.$emit("add-worker", newWorker);
+				this.$emit("add-worker", this.internalDataObj);
 			}
 		},
 		computed: {
 			disabledButton() {
-				return (this.firstName == '' || this.phone == '');
+				return (this.internalDataObj.firstName == '' || this.internalDataObj.phone == '');
 			}
 		}
 	}

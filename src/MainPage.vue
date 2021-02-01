@@ -2,7 +2,7 @@
 	<div class="p-20">
 		<button class="mb-12" @click="openForm">Добавить</button>
 		<div v-if="isFormShown">
-			<FormAdding @close="closeAddingForm" @add-worker="addWorker" :bosses="workers" />
+			<FormAdding @close="closeAddingForm" @add-worker="addWorker" :bosses="workers" :data-obj="emptyDataObj" />
 		</div>
 		<Table :workers="workers" />
 	</div>
@@ -11,8 +11,8 @@
 <script>
 	import Table from './components/Table.vue'
 	import FormAdding from './components/FormAdding.vue'
-	import {getWorkers} from './components/data.js'
-	import {saveWorker} from './components/data.js'
+	import { getWorkers } from './components/data.js'
+	import { saveWorker } from './components/data.js'
 
 	export default {
 		components: {
@@ -22,7 +22,13 @@
 		data() {
 			return {
 				workers: [],
-				isFormShown: false
+				isFormShown: false,
+				emptyDataObj: {
+					id: '',
+					firstName: '',
+					phone: '',
+					bossId: ''
+				}
 			}
 		},
 		created() {
@@ -39,11 +45,6 @@
 			},
 			closeAddingForm() {
 				this.isFormShown = false;
-			}
-		},
-		computed: {
-			getNames() {
-				return this.names;
 			}
 		}
 	}

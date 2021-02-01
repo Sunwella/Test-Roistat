@@ -9,18 +9,26 @@
 		</table>
 		<h1 class="text-cetnter">Данных нет</h1>
 	</div>
+
 	<div v-else>
 		<table class="table">
 			<thead>
 				<tr>
-					<th v-for="(colName, index) in colNames" :key="index" @click="sort(colName)" :class="{
-						asc: isSortAsc && sortedColName == colName,
-						desc: !isSortAsc && sortedColName == colName
-					}">{{ colName }}</th>
+					<th 
+						v-for="(colName, index) in colNames" 
+						:key="index" 
+						:class="{
+							asc: isSortAsc && sortedColName == colName,
+							desc: !isSortAsc && sortedColName == colName
+						}"
+						@click="sort(colName)" 
+					>
+						{{ colName }}
+					</th>
 				</tr>
 			</thead>
 			<tbody>
-				<template v-for="worker in bossWorkers">
+				<template v-for="worker in bosses">
 					<tr :key="worker.id">
 						<td v-for="(colName, index) in colNames" :key="index">
 							<button class="add" v-if="worker.bossId == null && colName == 'firstName'" @click="showSubordinatePeople(worker)">+</button>
@@ -89,7 +97,7 @@
 					}
 				});
 			},
-			bossWorkers() {
+			bosses() {
 				return this.sortedTable.filter(item => item.bossId == null);
 			},
 			subordinateWorkersCurrentBoss() {
